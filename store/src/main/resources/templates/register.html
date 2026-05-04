@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #F5F0E8;
+            --card:      #FFFFFF;
+            --dark:      #1A1A2E;
+            --gold:      #E8B86D;
+            --gold-dark: #C99A50;
+            --brown:     #6B4C2A;
+            --text:      #2D2D2D;
+            --muted:     #8A7F74;
+            --border:    #E2D9CE;
+            --error:     #B84040;
+            --radius:    10px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(232,184,109,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(26,26,46,0.07) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 780px;
+            min-height: 460px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(26,26,46,0.18);
+        }
+
+        /* Left panel */
+        .panel-left {
+            width: 42%;
+            background-color: var(--dark);
+            background-image:
+                radial-gradient(circle at 30% 60%, rgba(232,184,109,0.18) 0%, transparent 60%),
+                radial-gradient(circle at 80% 10%, rgba(232,184,109,0.10) 0%, transparent 40%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            gap: 16px;
+        }
+
+        .store-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(232,184,109,0.15);
+            border: 1.5px solid rgba(232,184,109,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .store-icon svg {
+            width: 28px; height: 28px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .panel-left h1 {
+            font-family: 'Playfair Display', serif;
+            color: #FFFFFF;
+            font-size: 22px;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .panel-left p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .divider-gold {
+            width: 40px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+
+        /* Right panel */
+        .panel-right {
+            flex: 1;
+            background: var(--card);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 48px 44px;
+        }
+
+        .panel-right h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .panel-right .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 300;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--brown);
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #E2D9CE;
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            background: #FDFAF6;
+            transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(232,184,109,0.15);
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            margin-bottom: 20px;
+            background: #FDF0F0;
+            color: var(--error);
+            border: 1px solid rgba(184,64,64,0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--dark);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: background-color .2s, transform .1s;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(232,184,109,0.18) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform .4s ease;
+        }
+
+        .btn:hover { background-color: #252540; }
+        .btn:hover::after { transform: translateX(100%); }
+        .btn:active { transform: scale(0.99); }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .link a {
+            color: var(--brown);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(107,76,42,0.3);
+            transition: border-color .2s, color .2s;
+        }
+
+        .link a:hover {
+            color: var(--gold-dark);
+            border-color: var(--gold-dark);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- Left decorative panel -->
+    <div class="panel-left">
+        <div class="store-icon">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        </div>
+        <h1>Join the team</h1>
+        <div class="divider-gold"></div>
+        <p>Create your account to access the store management panel.</p>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="panel-right">
+        <h2>Create account</h2>
+        <p class="subtitle">Fill in your details to get started</p>
+
+        <div th:if="${message}" class="alert">
+            &#9888; <span th:text="${message}"></span>
+        </div>
+
+        <form th:action="@{/register}" method="post">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="your username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn">Create account</button>
+        </form>
+
+        <div class="link">
+            Already have an account? <a th:href="@{/login}">Sign in</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User List | Store Management</title>
+    <!-- Fuentes premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #F5F0E8; /* Crema */
+            --dark:      #1A1A2E; /* Azul noche */
+            --gold:      #E8B86D; /* Dorado */
+            --text:      #2D2D2D; /* Texto principal */
+            --brown:     #6B4C2A; /* Marrón cálido */
+            --white:     #FFFFFF;
+            --border:    #E2D9CE;
+            --radius:    12px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 5% 5%, rgba(232,184,109,0.08) 0%, transparent 30%),
+                radial-gradient(circle at 95% 95%, rgba(26,26,46,0.05) 0%, transparent 30%);
+            margin: 0;
+            padding: 50px 30px;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: var(--dark);
+            font-size: 36px;
+            margin-bottom: 40px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Botones superiores */
+        .top-actions {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-nuevo {
+            background-color: var(--dark);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(26, 26, 46, 0.1);
+        }
+
+        .btn-nuevo:hover {
+            background-color: var(--gold);
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        /* Botones de acción en tabla */
+        .btn-editar {
+            background: transparent;
+            color: var(--brown);
+            border: 1px solid var(--brown);
+            padding: 6px 14px;
+            font-size: 11px;
+            margin-right: 5px;
+        }
+
+        .btn-editar:hover {
+            background: var(--brown);
+            color: var(--white);
+        }
+
+        .btn-eliminar {
+            background: transparent;
+            color: #B84040;
+            border: 1px solid rgba(184, 64, 64, 0.2);
+            padding: 6px 14px;
+            font-size: 11px;
+        }
+
+        .btn-eliminar:hover {
+            background: #B84040;
+            color: var(--white);
+            border-color: #B84040;
+        }
+
+        /* Tabla Estilizada */
+        .table-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(26, 26, 46, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: var(--dark);
+            color: var(--gold);
+            padding: 18px 15px;
+            text-align: center;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 16px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Zebra sutil y Hover */
+        tr:nth-child(even) {
+            background-color: #FCFAF7;
+        }
+
+        tr:hover td {
+            background-color: #F2EDE4;
+        }
+
+        /* Badges */
+        .role-badge {
+            font-weight: 600;
+            color: var(--brown);
+            font-size: 12px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-active { background-color: #4CAF50; }
+        .status-inactive { background-color: #999; }
+
+        .footer-nav {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .btn-back {
+            color: var(--brown);
+            font-size: 15px;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            color: var(--dark);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>User List</h1>
+
+    <div class="top-actions">
+        <a th:href="@{/users/new}" class="btn btn-nuevo">+ New User</a>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.userId}">1</td>
+                <td style="font-weight: 500; color: var(--dark);" th:text="${user.username}">Username</td>
+                <td th:text="${user.email}">user@store.com</td>
+                <td class="role-badge" th:text="${user.role_user}">Admin</td>
+                <td>
+                    <span th:class="${user.status_user == 1} ? 'status-dot status-active' : 'status-dot status-inactive'"></span>
+                    <span th:text="${user.status_user == 1 ? 'Active' : 'Inactive'}">1</span>
+                </td>
+                <td>
+                    <a th:href="@{/users/edit/{id}(id=${user.userId})}" class="btn btn-editar">Edit</a>
+                    <a th:href="@{/users/delete/{id}(id=${user.userId})}"
+                       class="btn btn-eliminar"
+                       onclick="return confirm('¿Eliminar usuario?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer-nav">
+        <a th:href="@{/home}" class="btn-back">← Volver al Dashboard</a>
+    </div>
+</div>
+
+</body>
+</html>

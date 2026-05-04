@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #F5F0E8;
+            --card:      #FFFFFF;
+            --dark:      #1A1A2E;
+            --gold:      #E8B86D;
+            --gold-dark: #C99A50;
+            --brown:     #6B4C2A;
+            --text:      #2D2D2D;
+            --muted:     #8A7F74;
+            --border:    #E2D9CE;
+            --row-alt:   #FAF7F2;
+            --error:     #B84040;
+            --radius:    10px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 10% 15%, rgba(232,184,109,0.10) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(26,26,46,0.06) 0%, transparent 45%);
+            min-height: 100vh;
+            padding: 48px 40px;
+            color: var(--text);
+        }
+
+        /* ── Header ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--dark);
+        }
+
+        .page-header .subtitle {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 300;
+            margin-top: 2px;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: opacity .2s, transform .1s, box-shadow .2s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn:hover   { opacity: 0.88; transform: translateY(-1px); }
+        .btn:active  { transform: scale(0.98); }
+
+        .btn-new {
+            background: var(--dark);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(26,26,46,0.18);
+        }
+
+        .btn-edit {
+            background: var(--gold);
+            color: var(--dark);
+            box-shadow: 0 4px 12px rgba(232,184,109,0.25);
+            padding: 7px 14px;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--error);
+            border: 1.5px solid rgba(184,64,64,0.3);
+            padding: 7px 14px;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background: rgba(184,64,64,0.07);
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--brown);
+            border: 1.5px solid var(--border);
+            font-size: 13px;
+        }
+
+        .btn-back:hover { background: rgba(107,76,42,0.06); }
+
+        /* ── Table card ── */
+        .table-card {
+            background: var(--card);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(26,26,46,0.09);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--dark);
+        }
+
+        th {
+            padding: 14px 16px;
+            font-family: 'Jost', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.65);
+            text-align: left;
+        }
+
+        th:first-child { color: var(--gold); padding-left: 24px; }
+        td:first-child { padding-left: 24px; color: var(--muted); font-size: 13px; }
+
+        td {
+            padding: 13px 16px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        tbody tr { transition: background .15s; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:nth-child(even) { background: var(--row-alt); }
+        tbody tr:hover { background: rgba(232,184,109,0.07); }
+
+        /* Status badge */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-active   { background: #EDFAF3; color: #2D7A50; border: 1px solid rgba(45,122,80,0.2); }
+        .badge-inactive { background: #FDF0F0; color: #B84040; border: 1px solid rgba(184,64,64,0.2); }
+
+        .actions-cell { display: flex; gap: 8px; align-items: center; }
+
+        /* ── Footer ── */
+        .page-footer {
+            margin-top: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .record-count {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .gold-line {
+            display: block;
+            width: 36px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="page-header">
+    <div class="page-header-left">
+        <div class="header-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+            <span class="gold-line"></span>
+            <h1>Customers</h1>
+            <p class="subtitle">Manage your customer database</p>
+        </div>
+    </div>
+    <a th:href="@{/customers/new}" class="btn btn-new">
+        + New Customer
+    </a>
+</div>
+
+<!-- Table -->
+<div class="table-card">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.customerId}"></td>
+            <td th:text="${customer.firstName}"></td>
+            <td th:text="${customer.lastName}"></td>
+            <td th:text="${customer.address}"></td>
+            <td>
+                <span th:if="${customer.statusCustomer == 1}" class="badge badge-active">Active</span>
+                <span th:if="${customer.statusCustomer == 0}" class="badge badge-inactive">Inactive</span>
+            </td>
+            <td>
+                <div class="actions-cell">
+                    <a th:href="@{/customers/edit/{id}(id=${customer.customerId})}" class="btn btn-edit">Edit</a>
+                    <a th:href="@{/customers/delete/{id}(id=${customer.customerId})}"
+                       class="btn btn-delete"
+                       onclick="return confirm('Delete this customer?')">Delete</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Footer -->
+<div class="page-footer">
+    <a th:href="@{/home}" class="btn btn-back">← Back to Home</a>
+</div>
+
+</body>
+</html>

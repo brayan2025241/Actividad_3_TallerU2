@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #F5F0E8;
+            --card:      #FFFFFF;
+            --dark:      #1A1A2E;
+            --gold:      #E8B86D;
+            --gold-dark: #C99A50;
+            --brown:     #6B4C2A;
+            --text:      #2D2D2D;
+            --muted:     #8A7F74;
+            --border:    #E2D9CE;
+            --radius:    12px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: var(--dark);
+            padding: 0 40px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(26,26,46,0.2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            color: #fff;
+        }
+
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 7px;
+            color: rgba(255,255,255,0.65);
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            text-decoration: none;
+            transition: border-color .2s, color .2s, background .2s;
+        }
+
+        .btn-logout:hover {
+            border-color: rgba(255,255,255,0.4);
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+        }
+
+        /* ── Page header ── */
+        .page-header {
+            padding: 44px 40px 36px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        /* ── Grid ── */
+        .section {
+            padding: 36px 40px 48px;
+            flex: 1;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 26px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(26,26,46,0.05);
+            transition: transform .2s, box-shadow .2s, border-color .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(26,26,46,0.10);
+            border-color: var(--gold);
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            background: #F5F0E8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--brown);
+            fill: none;
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 300;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .card-link {
+            font-size: 12px;
+            color: var(--gold-dark);
+            font-weight: 500;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a class="brand" th:href="@{/home}">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Store System</span>
+    </a>
+    <a th:href="@{/login}" class="btn-logout">
+        Logout →
+    </a>
+</nav>
+
+<!-- Page header -->
+<div class="page-header">
+    <h1>Management Panel</h1>
+    <p>Select a module to get started</p>
+</div>
+
+<!-- Grid -->
+<div class="section">
+    <p class="section-label">Modules</p>
+    <div class="grid">
+
+        <a th:href="@{/users}" class="card">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="card-title">Users</div>
+            <div class="card-desc">Manage system users, roles and access permissions.</div>
+            <div class="card-link">View module →</div>
+        </a>
+
+        <a th:href="@{/customers}" class="card">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="card-title">Customers</div>
+            <div class="card-desc">Track customer records, addresses and account status.</div>
+            <div class="card-link">View module →</div>
+        </a>
+
+        <a th:href="@{/products}" class="card">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <div class="card-title">Products</div>
+            <div class="card-desc">Browse inventory, pricing and stock availability.</div>
+            <div class="card-link">View module →</div>
+        </a>
+
+        <a th:href="@{/sales}" class="card">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="card-title">Sales</div>
+            <div class="card-desc">Review transactions, totals and sale statuses.</div>
+            <div class="card-link">View module →</div>
+        </a>
+
+        <a th:href="@{/sale-details}" class="card">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="card-title">Sale Details</div>
+            <div class="card-desc">Inspect line items, quantities and subtotals per sale.</div>
+            <div class="card-link">View module →</div>
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

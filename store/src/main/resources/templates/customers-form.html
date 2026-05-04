@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #F5F0E8;
+            --card:      #FFFFFF;
+            --dark:      #1A1A2E;
+            --gold:      #E8B86D;
+            --gold-dark: #C99A50;
+            --brown:     #6B4C2A;
+            --text:      #2D2D2D;
+            --muted:     #8A7F74;
+            --border:    #E2D9CE;
+            --error:     #B84040;
+            --radius:    10px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(232,184,109,0.10) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(26,26,46,0.06) 0%, transparent 45%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 16px 48px rgba(26,26,46,0.12);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* Top accent bar */
+        .form-header {
+            background: var(--dark);
+            padding: 28px 36px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-header::after {
+            content: '';
+            position: absolute;
+            top: -30px; right: -30px;
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: rgba(232,184,109,0.10);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(232,184,109,0.15);
+            border: 1px solid rgba(232,184,109,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-icon svg {
+            width: 18px; height: 18px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .form-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 300;
+            margin-top: 3px;
+        }
+
+        .gold-bar {
+            width: 32px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            margin-top: 16px;
+            opacity: 0.7;
+        }
+
+        /* Form body */
+        .form-body {
+            padding: 32px 36px 36px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--brown);
+            margin-bottom: 7px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            background: #FDFAF6;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(232,184,109,0.15);
+        }
+
+        /* Status select replacement hint */
+        .field-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+            font-weight: 300;
+        }
+
+        .error-msg {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .error-msg::before {
+            content: '!';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--error);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Actions */
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 11px 20px;
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: opacity .2s, transform .1s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn:hover  { opacity: 0.87; transform: translateY(-1px); }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-save {
+            background: var(--dark);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(26,26,46,0.18);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--brown);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-cancel:hover { background: rgba(107,76,42,0.06); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="form-header">
+        <div class="header-top">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+                <h2 th:text="${editMode} ? 'Edit Customer' : 'New Customer'"></h2>
+                <p th:text="${editMode} ? 'Update customer information' : 'Fill in the details below'"></p>
+            </div>
+        </div>
+        <div class="gold-bar"></div>
+    </div>
+
+    <!-- Form body -->
+    <div class="form-body">
+        <form th:action="${editMode} ? @{/customers/update} : @{/customers/save}"
+              th:object="${customer}" method="post">
+
+            <input type="hidden" th:field="*{customerId}"/>
+
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" th:field="*{firstName}" placeholder="e.g. John">
+                <div class="error-msg" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" th:field="*{lastName}" placeholder="e.g. Smith">
+                <div class="error-msg" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" th:field="*{address}" placeholder="e.g. 123 Main St, New York">
+                <div class="error-msg" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <input type="number" th:field="*{statusCustomer}" placeholder="1 = Active, 0 = Inactive" min="0" max="1">
+                <p class="field-hint">Enter 1 for Active or 0 for Inactive</p>
+                <div class="error-msg" th:if="${#fields.hasErrors('statusCustomer')}" th:errors="*{statusCustomer}"></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-save">Save</button>
+                <a th:href="@{/customers}" class="btn btn-cancel">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

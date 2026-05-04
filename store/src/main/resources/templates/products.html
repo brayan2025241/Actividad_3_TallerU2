@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #F5F0E8;
+            --card:      #FFFFFF;
+            --dark:      #1A1A2E;
+            --gold:      #E8B86D;
+            --gold-dark: #C99A50;
+            --brown:     #6B4C2A;
+            --text:      #2D2D2D;
+            --muted:     #8A7F74;
+            --border:    #E2D9CE;
+            --row-alt:   #FAF7F2;
+            --error:     #B84040;
+            --radius:    10px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 10% 15%, rgba(232,184,109,0.10) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(26,26,46,0.06) 0%, transparent 45%);
+            min-height: 100vh;
+            padding: 48px 40px;
+            color: var(--text);
+        }
+
+        /* ── Header ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .gold-line {
+            display: block;
+            width: 36px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+            margin-bottom: 6px;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--dark);
+        }
+
+        .page-header .subtitle {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 300;
+            margin-top: 2px;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: var(--radius);
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: opacity .2s, transform .1s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-new {
+            background: var(--dark);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(26,26,46,0.18);
+        }
+
+        .btn-edit {
+            background: var(--gold);
+            color: var(--dark);
+            box-shadow: 0 4px 12px rgba(232,184,109,0.25);
+            padding: 7px 14px;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--error);
+            border: 1.5px solid rgba(184,64,64,0.3);
+            padding: 7px 14px;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover { background: rgba(184,64,64,0.07); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--brown);
+            border: 1.5px solid var(--border);
+            font-size: 13px;
+        }
+
+        .btn-back:hover { background: rgba(107,76,42,0.06); }
+
+        /* ── Table card ── */
+        .table-card {
+            background: var(--card);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(26,26,46,0.09);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr { background: var(--dark); }
+
+        th {
+            padding: 14px 16px;
+            font-family: 'Jost', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.65);
+            text-align: left;
+        }
+
+        th:first-child { color: var(--gold); padding-left: 24px; }
+        td:first-child  { padding-left: 24px; color: var(--muted); font-size: 13px; }
+
+        td {
+            padding: 13px 16px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        tbody tr { transition: background .15s; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:nth-child(even) { background: var(--row-alt); }
+        tbody tr:hover { background: rgba(232,184,109,0.07); }
+
+        /* Price cell */
+        .price-cell {
+            font-weight: 500;
+            color: var(--brown);
+        }
+
+        /* Stock cell */
+        .stock-low  { color: var(--error); font-weight: 500; }
+        .stock-ok   { color: #3A7A52; font-weight: 500; }
+
+        /* Status badge */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+        }
+
+        .badge-active   { background: #EDFAF3; color: #2D7A50; border: 1px solid rgba(45,122,80,0.2); }
+        .badge-inactive { background: #FDF0F0; color: #B84040; border: 1px solid rgba(184,64,64,0.2); }
+
+        .actions-cell { display: flex; gap: 8px; align-items: center; }
+
+        /* ── Footer ── */
+        .page-footer {
+            margin-top: 28px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="page-header">
+    <div class="page-header-left">
+        <div class="header-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <div>
+            <span class="gold-line"></span>
+            <h1>Products</h1>
+            <p class="subtitle">Manage your product catalog</p>
+        </div>
+    </div>
+    <a th:href="@{/products/showForm}" class="btn btn-new">+ New Product</a>
+</div>
+
+<!-- Table -->
+<div class="table-card">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.productId}"></td>
+            <td th:text="${product.productName}"></td>
+            <td class="price-cell" th:text="'$' + ${product.price}"></td>
+            <td>
+                <span th:classappend="${product.stock < 10} ? 'stock-low' : 'stock-ok'"
+                      th:text="${product.stock}"></span>
+            </td>
+            <td>
+                <span th:if="${product.statusProduct == 1}" class="badge badge-active">Active</span>
+                <span th:if="${product.statusProduct == 0}" class="badge badge-inactive">Inactive</span>
+            </td>
+            <td>
+                <div class="actions-cell">
+                    <a th:href="@{/products/edit/{id}(id=${product.productId})}" class="btn btn-edit">Edit</a>
+                    <a th:href="@{/products/delete/{id}(id=${product.productId})}"
+                       class="btn btn-delete"
+                       onclick="return confirm('Delete this product?')">Delete</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Footer -->
+<div class="page-footer">
+    <a th:href="@{/home}" class="btn btn-back">← Back to Home</a>
+</div>
+
+</body>
+</html>
